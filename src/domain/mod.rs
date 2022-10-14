@@ -1,2 +1,2 @@
-pub mod subscribers;
 pub mod emails;
+pub mod subscribers;

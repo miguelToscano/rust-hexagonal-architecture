@@ -8,12 +8,12 @@ async fn health_check() -> impl Responder {
 }
 
 pub fn run(listener: TcpListener, db_pool: PgPool) -> Result<Server, std::io::Error> {
-
     let db_pool = web::Data::new(db_pool);
 
-    let server = HttpServer::new(move || App::new().route("/health_check", web::get().to(health_check)))
-        .listen(listener)?
-        .run();
+    let server =
+        HttpServer::new(move || App::new().route("/health_check", web::get().to(health_check)))
+            .listen(listener)?
+            .run();
 
     Ok(server)
 }
