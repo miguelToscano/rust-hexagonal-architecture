@@ -1,7 +1,12 @@
 use newsletter::server;
+use newsletter::server::configuration;
 
 #[tokio::main]
 pub async fn main() -> std::io::Result<()> {
-    let listener = std::net::TcpListener::bind("127.0.0.1:8080").expect("Failed to bind 8080 port");
+    let configuration = configuration::get_configuration().expect("Failed to read configuration.");
+
+    let address = format!("{}:{}", configuration.host, configuration.port);
+
+    let listener = std::net::TcpListener::bind(address).expect(&format!("Failed to bind {} port", configuration.port));
     server::app::run(listener)?.await
 }
