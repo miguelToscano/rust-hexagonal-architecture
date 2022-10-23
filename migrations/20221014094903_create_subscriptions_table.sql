@@ -1,8 +1,9 @@
 -- Create Subscriptions Table
-CREATE TABLE subscriptions(
+CREATE TABLE users(
 id uuid NOT NULL,
 PRIMARY KEY (id),
 email TEXT NOT NULL UNIQUE,
-name TEXT NOT NULL,
-subscribed_at timestamptz NOT NULL
+password TEXT NOT NULL,
+username TEXT NOT NULL UNIQUE,
+created_at TEXT NOT NULL
 );

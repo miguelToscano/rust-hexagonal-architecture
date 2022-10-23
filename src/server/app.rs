@@ -5,18 +5,13 @@ use std::net::TcpListener;
 
 use crate::server::routes;
 
-async fn health_check() -> impl Responder {
-    HttpResponse::Ok()
-}
-
-pub fn run(listener: TcpListener, db_pool: PgPool) -> Result<Server, std::io::Error> {
-    let db_pool = web::Data::new(db_pool);
-
+pub async fn run(listener: TcpListener) -> Result<()> {
     let server = HttpServer::new(move || {
-        App::new().route("/health_check", web::get().to(routes::health_check))
+        App::new()
+            .route("/health_check", web::get().to(routes::health_check))
+            .route("/sign_up", web::post().to(routes::sign_up))
+            .route("/users", web::get().to(routes::get_users))
     })
-    .listen(listener)?
-    .run();
-
-    Ok(server)
+    .bind("lolcahost:8080")?
+    .await;
 }
