@@ -1,13 +1,15 @@
 use actix_web::{
-    web::{self, Json},
+    get,
+    web::{self, Json, Data},
     App, HttpResponse, HttpServer, Responder,
 };
-use sqlx::PgPool;
 
-use crate::domain::users::{
+use crate::{domain::users::{
     services as users_service,
     types::{CreateUserInput, User},
-};
+}, adapters::outbound::users_repositories::mongo_db::{MongoDBUsersRepository}};
+
+use crate::domain::aggregators;
 
 #[derive(serde::Serialize)]
 pub struct HealthCheckResponse {
@@ -55,16 +57,16 @@ pub async fn sign_up(sign_up_input: Json<SignUpRequestBody>) -> Json<SignUpRespo
 
 #[derive(serde::Serialize, Debug, Clone)]
 pub struct GetUsersResponse {
+    pub count: usize,
     pub users: Vec<User>,
 }
 
 #[get("/users")]
-pub async fn get_users(pool: web::Data<PgPool>) -> Json<String> {
+pub async fn get_users(users_repository: Data<MongoDBUsersRepository>) -> HttpResponse {
     println!("Getting users");
 
-    let rows = sqlx::query!(
-        "SELECT * FROM users"
-    ).fetch_all(pool.get_ref()).await.expect("Error");
-
-    return Json("Ok".to_string());
+    match aggregators::get_users(users_repository.get_ref()).await {
+        Ok(users) => HttpResponse::Ok().json(GetUsersResponse { count: users.len(), users }),
+        Err(()) => HttpResponse::InternalServerError().body(String::from("Internal server error")),
+    }
 }

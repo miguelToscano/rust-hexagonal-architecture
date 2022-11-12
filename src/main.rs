@@ -1,12 +1,7 @@
-use sqlx::PgPool;
-
 pub mod domain;
-pub mod server;
-pub mod repositories;
+pub mod adapters;
 
-use newsletter::server;
-use newsletter::server::configuration;
 #[tokio::main]
 pub async fn main() -> std::io::Result<()> {
-    server::app::run().await?
+    adapters::inbound::rest_server::run().await
 }
