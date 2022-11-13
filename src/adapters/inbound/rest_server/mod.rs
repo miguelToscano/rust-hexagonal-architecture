@@ -1,8 +1,8 @@
 use actix_web::{web, App, HttpResponse, HttpServer, Responder};
 use mongodb::{bson::doc, options::ClientOptions, Client};
 
-use crate::adapters::outbound::users_repositories::{UsersRepository, };
 use crate::adapters::outbound::users_repositories::mongo_db::MongoDBUsersRepository;
+use crate::adapters::outbound::users_repositories::UsersRepository;
 pub mod routes;
 pub mod types;
 

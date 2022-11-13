@@ -1,6 +1,6 @@
-pub mod domain;
 pub mod adapters;
 pub mod application;
+pub mod domain;
 
 #[tokio::main]
 pub async fn main() -> std::io::Result<()> {

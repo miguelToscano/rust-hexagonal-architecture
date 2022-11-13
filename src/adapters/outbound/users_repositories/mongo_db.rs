@@ -1,15 +1,15 @@
-use mongodb::Collection;
-use mongodb::bson::doc;
-use futures_util::TryStreamExt;
 use super::UsersRepository;
-use crate::domain::users::types::{User, CreateUserInput};
-use dotenv::dotenv;
-use mongodb::Client;
+use crate::domain::users::types::{CreateUserInput, User};
 use async_trait::async_trait;
+use dotenv::dotenv;
+use futures_util::TryStreamExt;
+use mongodb::bson::doc;
+use mongodb::Client;
+use mongodb::Collection;
 
 #[derive(Clone)]
 pub struct MongoDBUsersRepository {
-    collection: Collection<User>
+    collection: Collection<User>,
 }
 
 impl MongoDBUsersRepository {
@@ -28,7 +28,6 @@ impl MongoDBUsersRepository {
 
 #[async_trait]
 impl UsersRepository for MongoDBUsersRepository {
-
     async fn get_users(&self) -> Result<Vec<User>, ()> {
         let mut cursors = self
             .collection
@@ -47,14 +46,13 @@ impl UsersRepository for MongoDBUsersRepository {
         {
             users.push(user)
         }
-        
+
         return Ok(users);
     }
 
     async fn create_user(&self, user: &CreateUserInput) -> Result<(), ()> {
         let new_doc = User::from(user.clone());
-        self
-            .collection
+        self.collection
             .insert_one(new_doc, None)
             .await
             .ok()

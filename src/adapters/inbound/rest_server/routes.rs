@@ -1,14 +1,16 @@
 use actix_web::{
-    get,
-    post,
-    web::{self, Json, Data},
+    get, post,
+    web::{self, Data, Json},
     App, HttpResponse, HttpServer, Responder,
 };
 
-use crate::{domain::users::{
-    services as users_service,
-    types::{CreateUserInput, User},
-}, adapters::outbound::users_repositories::mongo_db::{MongoDBUsersRepository}};
+use crate::{
+    adapters::outbound::users_repositories::mongo_db::MongoDBUsersRepository,
+    domain::users::{
+        services as users_service,
+        types::{CreateUserInput, User},
+    },
+};
 
 use crate::domain::aggregators;
 
@@ -38,7 +40,10 @@ pub struct SignUpResponse {
 }
 
 #[post("/sign_up")]
-pub async fn sign_up(users_repository: Data<MongoDBUsersRepository>, sign_up_input: Json<SignUpRequestBody>) -> HttpResponse {
+pub async fn sign_up(
+    users_repository: Data<MongoDBUsersRepository>,
+    sign_up_input: Json<SignUpRequestBody>,
+) -> HttpResponse {
     println!("Sign up request body: {:?}", sign_up_input);
 
     let create_user_input = CreateUserInput {
@@ -64,7 +69,10 @@ pub async fn get_users(users_repository: Data<MongoDBUsersRepository>) -> HttpRe
     println!("Getting users");
 
     match aggregators::get_users(users_repository.get_ref()).await {
-        Ok(users) => HttpResponse::Ok().json(GetUsersResponse { count: users.len(), users }),
+        Ok(users) => HttpResponse::Ok().json(GetUsersResponse {
+            count: users.len(),
+            users,
+        }),
         Err(()) => HttpResponse::InternalServerError().body(String::from("Internal server error")),
     }
 }

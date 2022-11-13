@@ -1,4 +1,4 @@
-use crate::domain::users::types::{User, CreateUserInput};
+use crate::domain::users::types::{CreateUserInput, User};
 use async_trait::async_trait;
 
 pub mod mongo_db;
