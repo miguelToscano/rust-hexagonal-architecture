@@ -1,5 +1,6 @@
 use actix_web::{
     get,
+    post,
     web::{self, Json, Data},
     App, HttpResponse, HttpServer, Responder,
 };
@@ -36,7 +37,8 @@ pub struct SignUpResponse {
     pub token: String,
 }
 
-pub async fn sign_up(sign_up_input: Json<SignUpRequestBody>) -> Json<SignUpResponse> {
+#[post("/sign_up")]
+pub async fn sign_up(users_repository: Data<MongoDBUsersRepository>, sign_up_input: Json<SignUpRequestBody>) -> HttpResponse {
     println!("Sign up request body: {:?}", sign_up_input);
 
     let create_user_input = CreateUserInput {
@@ -45,14 +47,10 @@ pub async fn sign_up(sign_up_input: Json<SignUpRequestBody>) -> Json<SignUpRespo
         username: sign_up_input.username.clone(),
     };
 
-    let user = users_service::create(create_user_input).await.unwrap();
-    println!("Created user: {:?}", user);
-
-    let response = SignUpResponse {
-        token: String::from("computed token"),
-    };
-
-    return Json(response);
+    match aggregators::create_user(users_repository.get_ref(), &create_user_input).await {
+        Ok(token) => HttpResponse::Ok().json(SignUpResponse { token }),
+        Err(()) => HttpResponse::InternalServerError().body(String::from("Internal server error")),
+    }
 }
 
 #[derive(serde::Serialize, Debug, Clone)]

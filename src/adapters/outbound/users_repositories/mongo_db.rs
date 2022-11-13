@@ -2,7 +2,7 @@ use mongodb::Collection;
 use mongodb::bson::doc;
 use futures_util::TryStreamExt;
 use super::UsersRepository;
-use crate::domain::users::types::User;
+use crate::domain::users::types::{User, CreateUserInput};
 use dotenv::dotenv;
 use mongodb::Client;
 use async_trait::async_trait;
@@ -49,5 +49,17 @@ impl UsersRepository for MongoDBUsersRepository {
         }
         
         return Ok(users);
+    }
+
+    async fn create_user(&self, user: &CreateUserInput) -> Result<(), ()> {
+        let new_doc = User::from(user.clone());
+        self
+            .collection
+            .insert_one(new_doc, None)
+            .await
+            .ok()
+            .expect("Error creating user");
+
+        Ok(())
     }
 }
