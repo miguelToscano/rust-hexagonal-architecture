@@ -5,14 +5,13 @@ use actix_web::{
 };
 
 use crate::{
+    application,
     adapters::outbound::users_repositories::mongo_db::MongoDBUsersRepository,
     domain::users::{
         services as users_service,
         types::{CreateUserInput, User},
     },
 };
-
-use crate::domain::aggregators;
 
 #[derive(serde::Serialize)]
 pub struct HealthCheckResponse {
@@ -52,7 +51,7 @@ pub async fn sign_up(
         username: sign_up_input.username.clone(),
     };
 
-    match aggregators::create_user(users_repository.get_ref(), &create_user_input).await {
+    match application::create_user(users_repository.get_ref(), &create_user_input).await {
         Ok(token) => HttpResponse::Ok().json(SignUpResponse { token }),
         Err(()) => HttpResponse::InternalServerError().body(String::from("Internal server error")),
     }
@@ -68,7 +67,7 @@ pub struct GetUsersResponse {
 pub async fn get_users(users_repository: Data<MongoDBUsersRepository>) -> HttpResponse {
     println!("Getting users");
 
-    match aggregators::get_users(users_repository.get_ref()).await {
+    match application::get_users(users_repository.get_ref()).await {
         Ok(users) => HttpResponse::Ok().json(GetUsersResponse {
             count: users.len(),
             users,
