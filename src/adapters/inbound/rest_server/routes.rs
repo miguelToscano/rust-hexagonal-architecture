@@ -5,8 +5,8 @@ use actix_web::{
 };
 
 use crate::{
-    application,
     adapters::outbound::users_repositories::mongo_db::MongoDBUsersRepository,
+    application,
     domain::users::{
         services as users_service,
         types::{CreateUserInput, User},

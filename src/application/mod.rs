@@ -1,4 +1,3 @@
-
 use crate::adapters::outbound::users_repositories::UsersRepository;
 use crate::domain::users::services as users_service;
 use crate::domain::users::types::{CreateUserInput, User};

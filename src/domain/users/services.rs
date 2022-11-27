@@ -1,4 +1,4 @@
-use crate::adapters::outbound::users_repositories::{UsersRepository};
+use crate::adapters::outbound::users_repositories::UsersRepository;
 use crate::domain::users::types::{CreateUserInput, User};
 
 pub async fn create(
@@ -15,6 +15,14 @@ pub async fn get_all(users_repository: &impl UsersRepository) -> Result<Vec<User
     return Ok(users);
 }
 
-pub async fn get_by_email(users_repository: &impl UsersRepository, email: &String) -> Result<User, ()> {
-    return Ok(User { email: String::from("Test email"), password_hash: String::from("password"), username: String::from("username"), created_at: String::from("date") });
+pub async fn get_by_email(
+    users_repository: &impl UsersRepository,
+    email: &String,
+) -> Result<User, ()> {
+    return Ok(User {
+        email: String::from("Test email"),
+        password_hash: String::from("password"),
+        username: String::from("username"),
+        created_at: String::from("date"),
+    });
 }
