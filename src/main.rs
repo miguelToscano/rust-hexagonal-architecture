@@ -10,7 +10,8 @@ pub async fn main() -> Result<(), std::io::Error> {
         Ok(mode) => {
             match mode.as_str() {
                 "REST_SERVER" => adapters::inbound::rest_server::run().await,
-                "CLI" => panic!("CLI mode not implemented yet"),
+                "GRAPHQL_SERVER" => panic!("GraphQL Server not implemented"),
+                "CLI" => panic!("CLI mode not implemented"),
                 _ => panic!("could not read MODE env var"),
             }
         },
