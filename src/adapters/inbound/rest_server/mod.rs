@@ -6,7 +6,7 @@ use crate::adapters::outbound::users_repositories::UsersRepository;
 pub mod routes;
 pub mod types;
 
-pub async fn run() -> std::io::Result<()> {
+pub async fn run() -> Result<(), std::io::Error> {
     let users_repository = MongoDBUsersRepository::init().await;
 
     HttpServer::new(move || {
