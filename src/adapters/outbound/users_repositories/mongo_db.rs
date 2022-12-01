@@ -63,8 +63,12 @@ impl UsersRepository for MongoDBUsersRepository {
 
     async fn get_user_by_emai(&self, email: &String) -> Result<User, ()> {
         let filter = doc! {"email": format!("{email}")};
-        let user = self.collection.find_one(filter, None).await.expect("Error fetching user");
-        
+        let user = self
+            .collection
+            .find_one(filter, None)
+            .await
+            .expect("Error fetching user");
+
         return Ok(user.unwrap());
     }
 }

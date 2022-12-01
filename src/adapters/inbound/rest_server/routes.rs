@@ -1,7 +1,8 @@
 use actix_web::{
+    dev::Path,
     get, post,
     web::{self, Data, Json},
-    App, HttpResponse, HttpServer, Responder, dev::Path,
+    App, HttpResponse, HttpServer, Responder,
 };
 use serde::Deserialize;
 
@@ -83,10 +84,13 @@ pub async fn get_users(users_repository: Data<MongoDBUsersRepository>) -> HttpRe
 }
 
 #[get("/users/{email}")]
-pub async fn get_user_by_emai(users_repository: Data<MongoDBUsersRepository>, info: web::Path<(String,)>) -> HttpResponse {
+pub async fn get_user_by_emai(
+    users_repository: Data<MongoDBUsersRepository>,
+    info: web::Path<(String,)>,
+) -> HttpResponse {
     println!("Getting user by email");
 
-    match  application::get_user_by_email(users_repository.get_ref(), &info.into_inner().0).await {
+    match application::get_user_by_email(users_repository.get_ref(), &info.into_inner().0).await {
         Ok(user) => HttpResponse::Ok().json(GetUserByEmailResponse { user }),
         Err(()) => HttpResponse::InternalServerError().body(String::from("Internal server error")),
     }
