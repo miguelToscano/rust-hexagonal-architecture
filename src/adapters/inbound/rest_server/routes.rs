@@ -1,8 +1,9 @@
 use actix_web::{
     get, post,
     web::{self, Data, Json},
-    App, HttpResponse, HttpServer, Responder,
+    App, HttpResponse, HttpServer, Responder, dev::Path,
 };
+use serde::Deserialize;
 
 use crate::{
     adapters::outbound::users_repositories::mongo_db::MongoDBUsersRepository,
@@ -63,6 +64,11 @@ pub struct GetUsersResponse {
     pub users: Vec<User>,
 }
 
+#[derive(serde::Serialize, Deserialize)]
+pub struct GetUserByEmailResponse {
+    pub user: User,
+}
+
 #[get("/users")]
 pub async fn get_users(users_repository: Data<MongoDBUsersRepository>) -> HttpResponse {
     println!("Getting users");
@@ -72,6 +78,16 @@ pub async fn get_users(users_repository: Data<MongoDBUsersRepository>) -> HttpRe
             count: users.len(),
             users,
         }),
+        Err(()) => HttpResponse::InternalServerError().body(String::from("Internal server error")),
+    }
+}
+
+#[get("/users/{email}")]
+pub async fn get_user_by_emai(users_repository: Data<MongoDBUsersRepository>, info: web::Path<(String,)>) -> HttpResponse {
+    println!("Getting user by email");
+
+    match  application::get_user_by_email(users_repository.get_ref(), &info.into_inner().0).await {
+        Ok(user) => HttpResponse::Ok().json(GetUserByEmailResponse { user }),
         Err(()) => HttpResponse::InternalServerError().body(String::from("Internal server error")),
     }
 }

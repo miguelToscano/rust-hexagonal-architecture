@@ -8,4 +8,6 @@ pub trait UsersRepository {
     async fn get_users(&self) -> Result<Vec<User>, ()>;
 
     async fn create_user(&self, user: &CreateUserInput) -> Result<(), ()>;
+
+    async fn get_user_by_emai(&self, email: &String) -> Result<User, ()>;
 }

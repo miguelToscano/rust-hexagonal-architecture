@@ -19,10 +19,6 @@ pub async fn get_by_email(
     users_repository: &impl UsersRepository,
     email: &String,
 ) -> Result<User, ()> {
-    return Ok(User {
-        email: String::from("Test email"),
-        password_hash: String::from("password"),
-        username: String::from("username"),
-        created_at: String::from("date"),
-    });
+    let user = users_repository.get_user_by_emai(email).await?;
+    return Ok(user);
 }
