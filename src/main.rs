@@ -1,6 +1,9 @@
+extern crate argon2;
 pub mod adapters;
 pub mod application;
 pub mod domain;
+pub mod ports;
+
 use dotenv::dotenv;
 
 #[tokio::main]
