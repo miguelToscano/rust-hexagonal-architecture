@@ -1,7 +1,7 @@
+use argon2::{self};
+use async_trait::async_trait;
 use chrono::prelude::*;
 use serde::{Deserialize, Serialize};
-use async_trait::async_trait;
-use argon2::{self};
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct CreateUserInput {
@@ -47,4 +47,3 @@ pub trait UsersRepository {
 
     async fn get_user_by_emai(&self, email: &String) -> Result<User, ()>;
 }
-

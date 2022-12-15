@@ -8,11 +8,7 @@ use serde::Deserialize;
 
 use crate::{
     adapters::outbound::users_repositories::mongo_db::MongoDBUsersRepository,
-    application,
-    domain::users::{
-        services as users_service,
-        types::{CreateUserInput, User},
-    },
+    domain::users::types::User, ports,
 };
 
 #[derive(serde::Serialize)]
@@ -53,7 +49,7 @@ pub async fn sign_up(
         username: sign_up_input.username.clone(),
     };
 
-    match application::create_user(users_repository.get_ref(), &create_user_input).await {
+    match ports::inbound::create_user(users_repository.get_ref(), &create_user_input).await {
         Ok(token) => HttpResponse::Ok().json(SignUpResponse { token }),
         Err(()) => HttpResponse::InternalServerError().body(String::from("Internal server error")),
     }
@@ -74,7 +70,7 @@ pub struct GetUserByEmailResponse {
 pub async fn get_users(users_repository: Data<MongoDBUsersRepository>) -> HttpResponse {
     println!("Getting users");
 
-    match application::get_users(users_repository.get_ref()).await {
+    match ports::inbound::get_users(users_repository.get_ref()).await {
         Ok(users) => HttpResponse::Ok().json(GetUsersResponse {
             count: users.len(),
             users,
@@ -90,7 +86,8 @@ pub async fn get_user_by_emai(
 ) -> HttpResponse {
     println!("Getting user by email");
 
-    match application::get_user_by_email(users_repository.get_ref(), &info.into_inner().0).await {
+    match ports::inbound::get_user_by_email(users_repository.get_ref(), &info.into_inner().0).await
+    {
         Ok(user) => HttpResponse::Ok().json(GetUserByEmailResponse { user }),
         Err(()) => HttpResponse::InternalServerError().body(String::from("Internal server error")),
     }
