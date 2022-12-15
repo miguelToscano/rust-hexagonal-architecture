@@ -1,5 +1,5 @@
-use crate::adapters::outbound::users_repositories::UsersRepository;
 use crate::domain::users::types::{CreateUserInput, User};
+use crate::ports::outbound::repositories::mongo_db::UsersRepository;
 
 pub async fn create(
     users_repository: &impl UsersRepository,

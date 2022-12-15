@@ -1,6 +1,6 @@
-use crate::adapters::outbound::users_repositories::UsersRepository;
 use crate::domain::users::services as users_service;
 use crate::domain::users::types::{CreateUserInput, User};
+use crate::ports::outbound::repositories::mongo_db::UsersRepository;
 
 pub async fn get_users(users_repository: &impl UsersRepository) -> Result<Vec<User>, ()> {
     let users = users_service::get_all(users_repository).await?;
