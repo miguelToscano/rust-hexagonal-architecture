@@ -19,7 +19,7 @@ pub async fn health_check() -> Json<HealthCheckResponse> {
         status: String::from("Ok"),
     };
 
-    return Json(response);
+    Json(response)
 }
 
 #[derive(serde::Deserialize, Debug, Clone)]
@@ -84,7 +84,7 @@ pub async fn get_user_by_emai(
 ) -> HttpResponse {
     println!("Getting user by email");
 
-    match ports::inbound::get_user_by_email(users_repository.get_ref(), &info.into_inner().0).await
+    match ports::inbound::get_user_by_email(users_repository.get_ref(), info.into_inner().0).await
     {
         Ok(user) => HttpResponse::Ok().json(GetUserByEmailResponse { user }),
         Err(()) => HttpResponse::InternalServerError().body(String::from("Internal server error")),

@@ -19,11 +19,11 @@ pub struct User {
 
 impl User {
     pub fn new(&self, create_user_input: CreateUserInput) -> User {
-        return User::from(create_user_input);
+        User::from(create_user_input)
     }
 
     pub fn hash_password(password: String) -> String {
-        return password;
+        password
     }
 }
 
@@ -44,5 +44,5 @@ pub trait UsersRepository {
 
     async fn create_user(&self, user: &CreateUserInput) -> Result<(), ()>;
 
-    async fn get_user_by_emai(&self, email: &String) -> Result<User, ()>;
+    async fn get_user_by_emai(&self, email: String) -> Result<User, ()>;
 }

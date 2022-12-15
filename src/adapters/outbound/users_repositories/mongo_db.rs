@@ -16,8 +16,8 @@ impl MongoDBUsersRepository {
     pub async fn init() -> Self {
         dotenv().ok();
         let uri = match std::env::var("MONGO_URI") {
-            Ok(v) => v.to_string(),
-            Err(_) => format!("Error loading env variable"),
+            Ok(v) => v,
+            Err(_) => panic!("Error loading env variable"),
         };
         let client = Client::with_uri_str(uri).await.unwrap();
         let db = client.database("newsletter");
@@ -33,7 +33,6 @@ impl UsersRepository for MongoDBUsersRepository {
             .collection
             .find(None, None)
             .await
-            .ok()
             .expect("Error getting list of users");
 
         let mut users: Vec<User> = Vec::new();
@@ -41,13 +40,12 @@ impl UsersRepository for MongoDBUsersRepository {
         while let Some(user) = cursors
             .try_next()
             .await
-            .ok()
             .expect("Error mapping through cursor")
         {
             users.push(user)
         }
 
-        return Ok(users);
+        Ok(users)
     }
 
     async fn create_user(&self, user: &CreateUserInput) -> Result<(), ()> {
@@ -55,13 +53,12 @@ impl UsersRepository for MongoDBUsersRepository {
         self.collection
             .insert_one(new_doc, None)
             .await
-            .ok()
             .expect("Error creating user");
 
         Ok(())
     }
 
-    async fn get_user_by_emai(&self, email: &String) -> Result<User, ()> {
+    async fn get_user_by_emai(&self, email: String) -> Result<User, ()> {
         let filter = doc! {"email": format!("{email}")};
         let user = self
             .collection
@@ -69,6 +66,6 @@ impl UsersRepository for MongoDBUsersRepository {
             .await
             .expect("Error fetching user");
 
-        return Ok(user.unwrap());
+        Ok(user.unwrap())
     }
 }

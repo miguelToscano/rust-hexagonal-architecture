@@ -9,7 +9,7 @@ use dotenv::dotenv;
 pub async fn main() -> Result<(), std::io::Error> {
     dotenv().ok();
 
-    let run_mode = std::env::var("RUN_MODE").unwrap_or("REST_SERVER".to_string());
+    let run_mode = std::env::var("RUN_MODE").unwrap_or_else(|_|"REST_SERVER".to_string());
 
     match run_mode.as_str() {
         "REST_SERVER" => adapters::inbound::rest_server::run().await,
