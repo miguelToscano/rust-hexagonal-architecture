@@ -1,4 +1,3 @@
-use argon2::{self};
 use async_trait::async_trait;
 use chrono::prelude::*;
 use serde::{Deserialize, Serialize};
