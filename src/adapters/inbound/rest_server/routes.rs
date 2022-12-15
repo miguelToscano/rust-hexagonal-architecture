@@ -1,15 +1,13 @@
 use actix_web::{
-    dev::Path,
     get, post,
     web::{self, Data, Json},
-    App, HttpResponse, HttpServer, Responder,
+    HttpResponse,
 };
 use serde::Deserialize;
 
-use crate::{
-    adapters::outbound::users_repositories::mongo_db::MongoDBUsersRepository,
-    domain::users::types::User, ports,
-};
+use crate::adapters::outbound::users_repositories::mongo_db::MongoDBUsersRepository;
+use crate::domain::users::types::{CreateUserInput, User};
+use crate::ports;
 
 #[derive(serde::Serialize)]
 pub struct HealthCheckResponse {
