@@ -13,7 +13,7 @@ pub async fn run() -> Result<(), std::io::Error> {
     HttpServer::new(move || {
         App::new()
             .wrap(Logger::new(
-                "Started at: %t - Status code: %s - Response size %b - Response time %T",
+                "Started at: %t - Status code: %s - Response size: %b bytes - Response time: %T milliseconds",
             ))
             .app_data(web::Data::new(users_repository.clone()))
             .service(routes::get_users)
